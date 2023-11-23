@@ -6,14 +6,18 @@ function App() {
   const [items, setItem] = useState([]);
   function handleSubmit(e) {
     e.preventDefault();
-    setItem((items) => [...items, task]);
+    const newItem = { task, id: crypto.randomUUID() };
+    setItem((items) => [...items, newItem]);
+  }
+  function handleDelete(id) {
+    setItem((items) => items.filter((item) => item.id !== id));
   }
 
   return (
     <div>
       <h1>Things to do</h1>
       <AddEvent task={task} onSetTask={setTask} onHandleSubmit={handleSubmit} />
-      <ToDoEvents items={items} />
+      <ToDoEvents items={items} onDeleteItem={handleDelete} />
       <Button />
     </div>
   );
@@ -34,23 +38,24 @@ function AddEvent({ task, onSetTask, onHandleSubmit }) {
   );
 }
 
-function ToDoEvents({ items }) {
+function ToDoEvents({ items, onDeleteItem }) {
   return (
     <div>
       <ul>
         {items.map((item) => (
-          <List item={item} />
+          <List item={item} key={item.id} onDeleteItem={onDeleteItem} />
         ))}
       </ul>
     </div>
   );
 }
 
-function List({ item }) {
+function List({ item, onDeleteItem }) {
   return (
     <li>
-      <input type="CheckBox" value={item}></input>
-      <span>{item}</span>
+      <input type="CheckBox" value={item.task}></input>
+      <span>{item.task}</span>
+      <button onClick={() => onDeleteItem(item.id)}>🗑️</button>
     </li>
   );
 }
