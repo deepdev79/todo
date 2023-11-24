@@ -12,13 +12,16 @@ function App() {
   function handleDelete(id) {
     setItem((items) => items.filter((item) => item.id !== id));
   }
+  function handleDeleteAll() {
+    setItem((items) => items.filter((item) => item.id === true));
+  }
 
   return (
-    <div>
-      <h1>Things to do</h1>
+    <div className="container">
+      <h1>Things to remember</h1>
       <AddEvent task={task} onSetTask={setTask} onHandleSubmit={handleSubmit} />
       <ToDoEvents items={items} onDeleteItem={handleDelete} />
-      <Button />
+      <Button onDeleteAll={handleDeleteAll} />
     </div>
   );
 }
@@ -26,13 +29,16 @@ function App() {
 function AddEvent({ task, onSetTask, onHandleSubmit }) {
   return (
     <div>
-      <form>
+      <form className="addEvent">
         <input
           type="text"
           value={task}
+          placeholder="Enter task to remember"
           onChange={(e) => onSetTask(e.target.value)}
         ></input>
-        <button onClick={onHandleSubmit}>Add</button>
+        <button className="btn" onClick={onHandleSubmit}>
+          Add
+        </button>
       </form>
     </div>
   );
@@ -41,7 +47,7 @@ function AddEvent({ task, onSetTask, onHandleSubmit }) {
 function ToDoEvents({ items, onDeleteItem }) {
   return (
     <div>
-      <ul>
+      <ul className="list">
         {items.map((item) => (
           <List item={item} key={item.id} onDeleteItem={onDeleteItem} />
         ))}
@@ -52,16 +58,27 @@ function ToDoEvents({ items, onDeleteItem }) {
 
 function List({ item, onDeleteItem }) {
   return (
-    <li>
-      <input type="CheckBox" value={item.task}></input>
+    <li className="items">
       <span>{item.task}</span>
-      <button onClick={() => onDeleteItem(item.id)}>🗑️</button>
+      <button
+        style={{ float: "right" }}
+        className="btn"
+        onClick={() => onDeleteItem(item.id)}
+      >
+        🗑️
+      </button>
     </li>
   );
 }
 
-function Button() {
-  return <button>Complete</button>;
+function Button({ onDeleteAll }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <button className="btn" onClick={() => onDeleteAll()}>
+        Completed All Tasks
+      </button>
+    </div>
+  );
 }
 
 export default App;
